@@ -46,7 +46,8 @@
       var chatHistory = document.getElementById("messageBody");
       chatHistory.scrollTop = chatHistory.scrollHeight;
 
-      var socket = io("");
+      var socket = io("/", { transports: ["websocket"], upgrade: false });
+
       function getData(form) {
         let message = document.getElementById("message").value;
 
