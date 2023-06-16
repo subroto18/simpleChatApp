@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Talking App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-800">
+    <div class="p-5">
+      <h1 class="text-white text-3xl text-center">Chat In Private</h1>
+      <div
+        id="messageBody"
+        class="max-h-[400px] w-[400px] h-[400px] md:w-[500px] bg-white mt-10 rounded m-auto overflow-auto"
+      >
+        <ul id="ul" class="p-3"></ul>
+      </div>
+    </div>
+
+    <form id="myForm">
+      <div class="w-[400px] md:w-[500] rounded m-auto">
+        <p id="output"></p>
+        <div class="flex items-center justify-between">
+          <input
+            class="shadow appearance-none border rounded-l-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="message"
+            type="text"
+            placeholder="message"
+          />
+          <input
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-lg"
+            id="submit"
+            type="submit"
+            value="Send"
+          />
+        </div>
+      </div>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      // scroll bar point to the bottom
+      var chatHistory = document.getElementById("messageBody");
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      var socket = io("");
+      function getData(form) {
+        let message = document.getElementById("message").value;
+
+        socket.emit("form", {
+          message: message,
+        });
+
+        // after sending
+        document.getElementById("message").value = "";
+      }
+
+      document
+        .getElementById("myForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          getData(e.target);
+        });
+
+      socket.on("send_message", (message) => {
+        let createLi = document.createElement("li");
+        createLi.innerText = message;
+
+        createLi.className = "bg-blue-500 p-2 rounded text-white mb-2";
+
+        document.getElementById("ul").appendChild(createLi);
+      });
+    </script>
+  </body>
+</html>
